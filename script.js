@@ -1,3 +1,15 @@
+class Particle {
+    constructor(type, color) {
+        this.type = type;
+        this.color = color;
+    }
+
+    draw(ctx, x, y, gridSize) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('sandbox');
     const ctx = canvas.getContext('2d');
@@ -15,6 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let particleCount = 10; // Default particle count
 
     let currentElement = 1; // Default element (sand: 1, water: 2, lava: 3, erase: 4)
+
+    // Define colors for different layers of lava
+    const lavaColors = ['#fe5907', '#fe6f08', '#fea203', '#fecc01'];
+
+    // Global variable to track 3D view state
+    let is3DView = false;
+
+    // Setup event listener for toggle 3D button
+    document.getElementById('toggle3DButton').addEventListener('click', toggle3DView);
 
     // Setup event listeners for element buttons
     document.getElementById('sandButton').addEventListener('click', () => {
@@ -48,6 +69,18 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let j = 0; j < rows; j++) {
                 grid[i][j] = 0;
             }
+        }
+    }
+
+    // Function to toggle between 2D and 3D view
+    function toggle3DView() {
+        is3DView = !is3DView;
+        if (is3DView) {
+            // Apply 3D transformations
+            canvas.style.transform = 'rotateX(60deg) rotateZ(-45deg) scale(0.8)';
+        } else {
+            // Revert to 2D view
+            canvas.style.transform = 'none';
         }
     }
 
@@ -179,7 +212,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (grid[i][j] === 2) {
                     ctx.fillStyle = 'blue'; // Water color
                 } else if (grid[i][j] === 3) {
-                    ctx.fillStyle = 'red'; // Lava color
+                    // Lava color based on layers
+                    if (j < rows * 0.75) {
+                        ctx.fillStyle = lavaColors[0]; // Bottom orange layer
+                    } else if (j < rows * 0.85) {
+                        ctx.fillStyle = lavaColors[1]; // Warmer orange layer
+                    } else if (j < rows * 0.95) {
+                        ctx.fillStyle = lavaColors[2]; // Darker yellow layer
+                    } else {
+                        ctx.fillStyle = lavaColors[3]; // Yellow layer
+                    }
                 } else if (grid[i][j] === 4) {
                     ctx.fillStyle = 'white'; // Erase color
                 } else {
