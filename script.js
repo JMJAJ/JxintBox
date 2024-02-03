@@ -76,10 +76,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggle3DView() {
         is3DView = !is3DView;
         if (is3DView) {
-            // Apply 3D transformations
+            // Apply 3D transformations with transition
+            canvas.style.transition = 'transform 1s ease-in-out';
             canvas.style.transform = 'rotateX(60deg) rotateZ(-45deg) scale(0.8)';
         } else {
-            // Revert to 2D view
+            // Revert to 2D view with transition
+            canvas.style.transition = 'transform 1s ease-in-out';
             canvas.style.transform = 'none';
         }
     }
